@@ -1,0 +1,28 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true,
+    "browser": true
+  },
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "script"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "semi": ["error", "always"],
+    "quotes": ["warn", "single"]
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "public/vendor/",
+    "*.min.js"
+  ],
+  "globals": {
+    "HanziWriter": "readonly",
+    "StrokeAnimator": "readonly",
+    "bootstrap": "readonly"
+  }
+}

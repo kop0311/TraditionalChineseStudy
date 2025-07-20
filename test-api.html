@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        #hanzi-writer { border: 1px solid #ddd; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>API测试页面</h1>
+    
+    <button onclick="testAPI()">测试API</button>
+    <button onclick="testHanziWriter()">测试笔顺</button>
+    
+    <div id="results"></div>
+    
+    <div id="hanzi-writer" style="width: 300px; height: 300px;"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js"></script>
+    <script>
+        async function testAPI() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="result">正在测试API...</div>';
+            
+            try {
+                const response = await fetch('/api/characters', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ character: '道' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    results.innerHTML = `
+                        <div class="result success">
+                            <h3>✅ API成功！</h3>
+                            <p><strong>字符:</strong> ${data.simp_char}</p>
+                            <p><strong>繁体:</strong> ${data.trad_char}</p>
+                            <p><strong>部首:</strong> ${data.radical}</p>
+                            <p><strong>笔顺数据:</strong> ${data.stroke_order_json ? '✅ 有' : '❌ 无'}</p>
+                            <p><strong>故事:</strong> ${data.story_html ? '✅ 有' : '❌ 无'}</p>
+                        </div>
+                    `;
+                    
+                    // 保存数据用于HanziWriter测试
+                    window.charData = data;
+                } else {
+                    results.innerHTML = `
+                        <div class="result error">
+                            <h3>❌ API失败</h3>
+                            <p>错误: ${data.error}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ 请求错误</h3>
+                        <p>错误: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testHanziWriter() {
+            if (!window.charData) {
+                alert('请先测试API获取字符数据');
+                return;
+            }
+            
+            const writerDiv = document.getElementById('hanzi-writer');
+            writerDiv.innerHTML = '';
+            
+            try {
+                const options = {
+                    width: 300,
+                    height: 300,
+                    padding: 20,
+                    strokeColor: '#4CAF50',
+                    strokeAnimationSpeed: 0.8,
+                    delayBetweenStrokes: 300,
+                    showOutline: true,
+                    showCharacter: false
+                };
+                
+                if (window.charData.stroke_order_json && window.charData.stroke_order_json.strokes) {
+                    options.charDataLoader = () => {
+                        return Promise.resolve({
+                            strokes: window.charData.stroke_order_json.strokes,
+                            medians: window.charData.stroke_order_json.medians || []
+                        });
+                    };
+                }
+                
+                const writer = HanziWriter.create(writerDiv, window.charData.simp_char, options);
+                
+                // 立即播放动画
+                setTimeout(() => {
+                    writer.animateCharacter();
+                }, 500);
+                
+                alert('✅ 笔顺显示成功！');
+                
+            } catch (error) {
+                alert('❌ 笔顺显示失败: ' + error.message);
+                console.error('HanziWriter error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

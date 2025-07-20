@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="<%= CDN_BOOTSTRAP %>" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <meta name="description" content="<%= classic.title %> <%= chapter.title %> - 小小读书郎">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">小小读书郎</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/classics">所有经典</a>
+                <a class="nav-link" href="/admin">管理后台</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center mb-1"><%= classic.title %></h1>
+                <h2 class="text-center h4 text-muted"><%= chapter.title %></h2>
+                <div class="text-center text-muted small">
+                    <%= classic.author %> · <%= classic.dynasty %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reader Content -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="reader-container">
+                    <% sentences.forEach(function(sentence) { %>
+                        <div class="sentence-group mb-4" data-sentence-id="<%= sentence.id %>">
+                            <table class="table table-borderless reader-table">
+                                <tr>
+                                    <td class="text-label">简体</td>
+                                    <td class="text-content simp-text">
+                                        <% 
+                                        const simpChars = sentence.simp.split('');
+                                        simpChars.forEach(function(char, index) {
+                                            if (char.match(/[一-龯]/)) {
+                                        %>
+                                            <span class="clickable-char" data-char="<%= char %>" data-type="simp"><%= char %></span>
+                                        <% } else { %>
+                                            <span class="punctuation"><%= char %></span>
+                                        <% } }); %>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-label">繁体</td>
+                                    <td class="text-content trad-text">
+                                        <% 
+                                        const tradChars = sentence.trad.split('');
+                                        tradChars.forEach(function(char, index) {
+                                            if (char.match(/[一-龯]/)) {
+                                        %>
+                                            <span class="clickable-char" data-char="<%= char %>" data-type="trad"><%= char %></span>
+                                        <% } else { %>
+                                            <span class="punctuation"><%= char %></span>
+                                        <% } }); %>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-label">拼音</td>
+                                    <td class="text-content pinyin-text">
+                                        <% if (sentence.pinyin_json) { %>
+                                            <% sentence.pinyin_json.forEach(function(pinyin) { %>
+                                                <span class="pinyin-syllable"><%= pinyin %></span>
+                                            <% }) %>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <% if (sentence.youtube_id) { %>
+                                <div class="youtube-container mt-3">
+                                    <div class="video-placeholder" data-video-id="<%= sentence.youtube_id %>">
+                                        <button class="btn btn-primary btn-sm">点击播放视频</button>
+                                    </div>
+                                </div>
+                            <% } %>
+                            
+                            <!-- 学习功能按钮组 -->
+                            <div class="learning-buttons mt-3 text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="/practice/writing/<%= sentence.id %>" class="btn btn-primary btn-sm">
+                                        ✏️ 学写字
+                                    </a>
+                                    <a href="/practice/pinyin/<%= sentence.id %>" class="btn btn-secondary btn-sm">
+                                        🗣️ 学拼音
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <nav class="chapter-nav">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <% if (prevChapter) { %>
+                                <a href="/reader/<%= classic.slug %>/<%= prevChapter.chapter_no %>" class="btn btn-outline-primary">
+                                    ← <%= prevChapter.title %>
+                                </a>
+                            <% } %>
+                        </div>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                目录
+                            </button>
+                            <ul class="dropdown-menu">
+                                <% allChapters.forEach(function(ch) { %>
+                                    <li>
+                                        <a class="dropdown-item <%= ch.id === chapter.id ? 'active' : '' %>" 
+                                           href="/reader/<%= classic.slug %>/<%= ch.chapter_no %>">
+                                            <%= ch.title %>
+                                        </a>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <% if (nextChapter) { %>
+                                <a href="/reader/<%= classic.slug %>/<%= nextChapter.chapter_no %>" class="btn btn-outline-primary">
+                                    <%= nextChapter.title %> →
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Modal -->
+    <div class="modal fade" id="charModal" tabindex="-1" aria-labelledby="charModalTitle">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="charModalTitle">汉字详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="charTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="stroke-tab" data-bs-toggle="tab" data-bs-target="#stroke" type="button">
+                                笔顺
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="story-tab" data-bs-toggle="tab" data-bs-target="#story" type="button">
+                                故事
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="etymology-tab" data-bs-toggle="tab" data-bs-target="#etymology" type="button">
+                                字源
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="charTabsContent">
+                        <div class="tab-pane fade show active" id="stroke" role="tabpanel">
+                            <div class="text-center">
+                                <div id="hanzi-writer" style="width: 300px; height: 300px; margin: 0 auto;"></div>
+                                <div class="mt-3">
+                                    <button id="animate-btn" class="btn btn-primary btn-sm">播放动画</button>
+                                    <button id="animate-slow-btn" class="btn btn-secondary btn-sm">慢速播放</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="story" role="tabpanel">
+                            <div id="char-story">
+                                <p class="text-muted">加载中...</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="etymology" role="tabpanel">
+                            <div id="char-etymology">
+                                <p class="text-muted">加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<%= CDN_HANZI %>"></script>
+    <script src="/js/reader.js"></script>
+</body>
+</html>

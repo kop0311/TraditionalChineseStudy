@@ -1,0 +1,92 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: xxdsl-mysql-dev
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: xiaoxiao_dushulang
+      MYSQL_USER: xxdsl_user
+      MYSQL_PASSWORD: xxdsl_password
+    volumes:
+      - xxdsl_mysql_data_dev:/var/lib/mysql
+    networks:
+      - xxdsl-network-dev
+    labels:
+      - "project=xiaoxiao-dushulang"
+      - "environment=development"
+      - "service=mysql"
+      - "version=1.0.0"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  app:
+    build: .
+    container_name: xxdsl-app-dev
+    restart: unless-stopped
+    ports:
+      - "9005:9005"
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: xxdsl_user
+      DB_PASS: xxdsl_password
+      DB_NAME: xiaoxiao_dushulang
+      SESSION_SECRET: xiaoxiao-dushulang-dev-secret-key
+      ADMIN_PASS: 123456
+      PORT: 9005
+      CDN_HANZI: https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js
+      CDN_BOOTSTRAP: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css
+      CDN_TINYMCE: https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js
+    volumes:
+      - xxdsl_app_logs_dev:/app/logs
+      - xxdsl_app_uploads_dev:/app/uploads
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    networks:
+      - xxdsl-network-dev
+    depends_on:
+      mysql:
+        condition: service_healthy
+    labels:
+      - "project=xiaoxiao-dushulang"
+      - "environment=development"
+      - "service=app"
+      - "version=1.0.0"
+
+volumes:
+  xxdsl_mysql_data_dev:
+    driver: local
+    labels:
+      - "project=xiaoxiao-dushulang"
+      - "environment=development"
+      - "service=mysql"
+  
+  xxdsl_app_logs_dev:
+    driver: local
+    labels:
+      - "project=xiaoxiao-dushulang"
+      - "environment=development"
+      - "service=app"
+
+  xxdsl_app_uploads_dev:
+    driver: local
+    labels:
+      - "project=xiaoxiao-dushulang"
+      - "environment=development"
+      - "service=app"
+
+networks:
+  xxdsl-network-dev:
+    driver: bridge
+    labels:
+      - "project=xiaoxiao-dushulang"
+      - "environment=development"

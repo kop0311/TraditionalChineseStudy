@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- 🔥 热重载已生效 - 立即刷新可见 -->
+    <link href="<%= CDN_BOOTSTRAP %>" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">小小读书郎</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/classics">所有经典</a>
+                <% if (locals.user) { %>
+                    <a class="nav-link" href="/dashboard">我的学习</a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <%= user.username %>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/dashboard">学习中心</a></li>
+                            <li><a class="dropdown-item" href="/admin">管理后台</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/auth/logout">退出登录</a></li>
+                        </ul>
+                    </div>
+                <% } else { %>
+                    <a class="nav-link" href="/auth/login">登录</a>
+                    <a class="nav-link" href="/auth/register">注册</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <!-- Hero Section -->
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h1 class="display-4 mb-3">小小读书郎</h1>
+                <p class="lead mb-4">用最经典的中文文本，让孩子在5分钟内学会1个字</p>
+                <p class="text-muted">一个无需安装、打开即用的网页，让海外儿童通过《道德经》《三字经》逐字学中文，看笔顺、听读音、看故事。</p>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="row mb-5">
+            <div class="col-md-4 text-center mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">📚 经典文本</h5>
+                        <p class="card-text">精选《道德经》《三字经》等传统文化经典，简繁对照，拼音标注</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">✏️ 笔顺动画</h5>
+                        <p class="card-text">点击任意汉字，观看标准笔顺动画，学习正确的书写方法</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">📖 汉字故事</h5>
+                        <p class="card-text">每个汉字都有有趣的故事，帮助孩子理解汉字的由来和含义</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classics List -->
+        <% if (locals.classics && classics.length > 0) { %>
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="text-center mb-4">开始学习</h2>
+                    <div class="row justify-content-center">
+                        <% classics.forEach(function(classic) { %>
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title"><%= classic.title %></h5>
+                                        <p class="card-text text-muted">
+                                            <%= classic.author %> · <%= classic.dynasty %>
+                                        </p>
+                                        <a href="/reader/<%= classic.slug %>/1" class="btn btn-primary">开始阅读</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">小小读书郎 - 让孩子在5分钟内学会1个字</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

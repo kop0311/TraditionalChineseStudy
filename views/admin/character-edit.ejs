@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="<%= CDN_BOOTSTRAP %>" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">小小读书郎 - 管理后台</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin/characters">汉字列表</a>
+                <a class="nav-link" href="/admin/dashboard">仪表板</a>
+                <form method="POST" action="/admin/logout" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">退出登录</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>编辑汉字: <span class="text-chinese h2"><%= character.simp_char %></span></h1>
+                    <a href="/admin/characters" class="btn btn-outline-secondary">返回列表</a>
+                </div>
+            </div>
+        </div>
+
+        <% if (locals.query && query.success) { %>
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-success alert-dismissible fade show">
+                        保存成功！
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+        <div class="row">
+            <!-- Character Info -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">汉字信息</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>简体字</strong></td>
+                                <td class="text-chinese h4"><%= character.simp_char %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>繁体字</strong></td>
+                                <td class="text-chinese h4"><%= character.trad_char %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>部首</strong></td>
+                                <td><%= character.radical || '—' %></td>
+                            </tr>
+                            <tr>
+                                <td><strong>笔顺数据</strong></td>
+                                <td>
+                                    <% if (character.stroke_order_json) { %>
+                                        <span class="badge bg-success">有</span>
+                                    <% } else { %>
+                                        <span class="badge bg-warning">无</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <% if (character.stroke_order_json) { %>
+                            <div class="text-center mt-3">
+                                <h6>笔顺预览</h6>
+                                <div id="stroke-preview" style="width: 200px; height: 200px; margin: 0 auto; border: 1px solid #dee2e6;"></div>
+                                <button id="preview-animate" class="btn btn-sm btn-outline-primary mt-2">播放动画</button>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Editor -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">编辑汉字故事</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/admin/characters/<%= character.id %>/edit">
+                            <div class="mb-3">
+                                <label for="story_html" class="form-label">故事内容（支持HTML）</label>
+                                <textarea class="form-control" id="story_html" name="story_html" rows="15"
+                                          placeholder="输入汉字的故事内容，可以使用HTML标签如 &lt;p&gt;、&lt;strong&gt;、&lt;em&gt; 等..."><%= character.story_html || '' %></textarea>
+                                <div class="form-text">
+                                    支持的HTML标签：&lt;p&gt;、&lt;strong&gt;、&lt;em&gt;、&lt;br&gt;、&lt;ul&gt;、&lt;ol&gt;、&lt;li&gt;
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">保存故事</button>
+                                <button type="button" class="btn btn-outline-secondary" id="preview-btn">预览</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Story Preview -->
+                <div class="card mt-3" id="preview-card" style="display: none;">
+                    <div class="card-header">
+                        <h6 class="mb-0">故事预览</h6>
+                    </div>
+                    <div class="card-body" id="preview-content">
+                        <!-- Preview content will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<%= CDN_HANZI %>"></script>
+    <script>
+        // Initialize stroke order preview
+        <% if (character.stroke_order_json) { %>
+            let previewWriter;
+            try {
+                previewWriter = HanziWriter.create('stroke-preview', '<%= character.simp_char %>', {
+                    width: 200,
+                    height: 200,
+                    padding: 10,
+                    strokeColor: '#0d6efd',
+                    strokeAnimationSpeed: 0.8,
+                    delayBetweenStrokes: 100
+                });
+                
+                document.getElementById('preview-animate').addEventListener('click', () => {
+                    previewWriter.animateCharacter();
+                });
+                
+                // Auto-animate once
+                setTimeout(() => previewWriter.animateCharacter(), 500);
+            } catch (error) {
+                document.getElementById('stroke-preview').innerHTML = '<div class="text-muted small">笔顺数据无效</div>';
+            }
+        <% } %>
+
+        // Story preview functionality
+        document.getElementById('preview-btn').addEventListener('click', function() {
+            const storyHtml = document.getElementById('story_html').value;
+            const previewCard = document.getElementById('preview-card');
+            const previewContent = document.getElementById('preview-content');
+            
+            if (storyHtml.trim()) {
+                // Basic sanitization (more robust sanitization should be done server-side)
+                const sanitized = storyHtml
+                    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                    .replace(/on\w+="[^"]*"/gi, '')
+                    .replace(/javascript:/gi, '');
+                
+                previewContent.innerHTML = sanitized;
+                previewCard.style.display = 'block';
+                previewCard.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                previewContent.innerHTML = '<p class="text-muted">故事内容为空</p>';
+                previewCard.style.display = 'block';
+            }
+        });
+
+        // Auto-save warning
+        let hasUnsavedChanges = false;
+        document.getElementById('story_html').addEventListener('input', function() {
+            hasUnsavedChanges = true;
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function() {
+            hasUnsavedChanges = false;
+        });
+    </script>
+</body>
+</html>

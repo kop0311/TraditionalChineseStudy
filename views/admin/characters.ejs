@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="<%= CDN_BOOTSTRAP %>" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">小小读书郎 - 管理后台</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin/dashboard">仪表板</a>
+                <a class="nav-link" href="/">返回网站</a>
+                <form method="POST" action="/admin/logout" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">退出登录</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>汉字管理</h1>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control" id="search-input" 
+                               placeholder="搜索汉字..." style="width: 200px;">
+                        <button class="btn btn-outline-primary" id="search-btn">搜索</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Grid -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>简体字</th>
+                                        <th>繁体字</th>
+                                        <th>部首</th>
+                                        <th>故事状态</th>
+                                        <th>笔顺</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% characters.forEach(function(char) { %>
+                                        <tr>
+                                            <td>
+                                                <span class="h4 text-chinese"><%= char.simp_char %></span>
+                                            </td>
+                                            <td>
+                                                <span class="h4 text-chinese"><%= char.trad_char %></span>
+                                            </td>
+                                            <td>
+                                                <span class="text-muted"><%= char.radical || '—' %></span>
+                                            </td>
+                                            <td>
+                                                <% if (char.story_html && char.story_html.trim()) { %>
+                                                    <span class="badge bg-success">有故事</span>
+                                                <% } else { %>
+                                                    <span class="badge bg-warning">无故事</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% if (char.stroke_order_json) { %>
+                                                    <span class="badge bg-info">有笔顺</span>
+                                                <% } else { %>
+                                                    <span class="badge bg-secondary">无笔顺</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/characters/<%= char.id %>/edit" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    编辑
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <% if (pagination.total > 1) { %>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <% if (pagination.hasPrev) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= pagination.current - 1 %>">上一页</a>
+                                </li>
+                            <% } %>
+                            
+                            <% for (let i = Math.max(1, pagination.current - 2); i <= Math.min(pagination.total, pagination.current + 2); i++) { %>
+                                <li class="page-item <%= i === pagination.current ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                            
+                            <% if (pagination.hasNext) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= pagination.current + 1 %>">下一页</a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple search functionality
+        document.getElementById('search-btn').addEventListener('click', function() {
+            const query = document.getElementById('search-input').value.trim();
+            if (query) {
+                window.location.href = `/admin/characters?search=${encodeURIComponent(query)}`;
+            }
+        });
+
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('search-btn').click();
+            }
+        });
+    </script>
+</body>
+</html>

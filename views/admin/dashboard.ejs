@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="<%= CDN_BOOTSTRAP %>" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/admin/dashboard">小小读书郎 - 管理后台</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">返回网站</a>
+                <form method="POST" action="/admin/logout" class="d-inline">
+                    <button type="submit" class="btn btn-outline-light btn-sm">退出登录</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">管理仪表板</h1>
+                <p class="text-muted">欢迎，<%= user.email %></p>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title"><%= stats.characterCount %></h4>
+                                <p class="card-text">汉字总数</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="h1">字</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title"><%= stats.charactersWithStories %></h4>
+                                <p class="card-text">有故事的汉字</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="h1">📖</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title"><%= stats.storyCoverage %>%</h4>
+                                <p class="card-text">故事覆盖率</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="h1">📊</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-3">快速操作</h2>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">汉字管理</h5>
+                        <p class="card-text">编辑汉字故事和相关信息</p>
+                        <a href="/admin/characters" class="btn btn-primary">管理汉字</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">查看网站</h5>
+                        <p class="card-text">查看前端用户体验</p>
+                        <a href="/" class="btn btn-outline-primary" target="_blank">打开网站</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">系统状态</h5>
+                        <p class="card-text">检查系统健康状态</p>
+                        <a href="/ping" class="btn btn-outline-success" target="_blank">健康检查</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-3">待办事项</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                完善汉字故事内容
+                                <span class="badge bg-primary rounded-pill">
+                                    <%= stats.characterCount - stats.charactersWithStories %> 个待完成
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                检查笔顺动画数据完整性
+                            </li>
+                            <li class="list-group-item">
+                                添加更多经典文本章节
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
