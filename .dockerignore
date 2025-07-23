@@ -1,21 +1,77 @@
+# Dependencies
 node_modules
-npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git and documentation
 .git
 .gitignore
 README.md
-.env
-.env.local
-.env.production
+*.md
+docs/
+.github/
+
+# IDE and editor files
 .DS_Store
-.vscode
-.idea
-coverage
-.nyc_output
-logs/*
-uploads/*
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+*~
+
+# Testing and coverage
+coverage/
+.nyc_output/
+tests/
+*.test.js
+*.spec.js
+
+# Build artifacts
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# Logs and runtime data (mounted as volumes)
+logs/
+uploads/
 *.log
-.docker
-docker-compose.yml
-docker-compose.*.yml
-Dockerfile
+*.pid
+*.seed
+*.pid.lock
+
+# Docker files
+.docker/
+docker-compose*.yml
+Dockerfile*
 .dockerignore
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.json
+
+# Development tools
+.eslintrc*
+.prettierrc*
+jest.config.js
+vite.config.js
+postcss.config.js
+
+# Cache directories
+.npm/
+.yarn/
+.pnpm-store/

@@ -1,0 +1,50 @@
+# Bun configuration file
+# https://bun.sh/docs/runtime/bunfig
+
+[install]
+# Lockfile settings
+lockfile = true
+exact = false
+cache = true
+
+# Package registry
+registry = "https://registry.npmjs.org/"
+
+# Development dependencies
+dev = true
+optional = true
+production = false
+
+[install.scopes]
+# Scoped registries
+"@types" = "https://registry.npmjs.org/"
+
+[test]
+# Test runner configuration
+preload = ["./tests/setup.js"]
+timeout = 5000
+root = "."
+
+[build]
+# Build configuration
+target = "node"
+minify = false
+sourcemap = "external"
+format = "esm"
+
+[run]
+# Runtime settings
+bunfig = ".bunfig"
+shell = "/bin/bash"
+
+# Performance settings
+[performance]
+# Enable fast refresh for development
+fastRefresh = true
+
+# Optimization settings
+[optimization]
+# Tree shaking
+treeShaking = true
+# Dead code elimination
+deadCodeElimination = true

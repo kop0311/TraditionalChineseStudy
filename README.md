@@ -1,12 +1,12 @@
 
 
-# 小小读书郎 - 儿童中文经典学习 Web MVP
+# 小小读书郎 - 儿童中文经典学习平台
 
 ## 项目简介
 
-一个无需安装、打开即用的网页应用，让海外儿童通过《道德经》《三字经》《弟子规》等经典文本逐字学中文，支持笔顺动画、拼音标注和汉字故事。
+一个现代化的儿童中文经典学习平台，采用 Next.js React 架构，让海外儿童通过《道德经》《三字经》《弟子规》等经典文本逐字学中文，支持笔顺动画、拼音标注和汉字故事。
 
-## 功能特色
+## 🌟 功能特色
 
 - 📚 **经典文本**: 精选《道德经》《三字经》《弟子规》，简繁对照，拼音标注
 - ✍️ **笔顺动画**: 点击任意汉字观看标准笔顺动画
@@ -15,25 +15,40 @@
 - 📱 **响应式设计**: 完美支持手机、平板、电脑
 - 🔧 **管理后台**: 内容管理系统，可编辑汉字故事
 
-## 技术栈
+## 🚀 技术架构 (现代化 Rust + Next.js)
 
-- **后端**: Node.js + Express.js
-- **数据库**: MySQL 8.0
-- **ORM**: Sequelize
-- **模板引擎**: EJS
-- **前端**: Bootstrap 5 + 原生 JavaScript
-- **笔顺动画**: hanzi-writer.js
-- **部署**: cPanel 共享主机 / VPS
+### 前端技术栈
+- **Framework**: Next.js 15 + React 19
+- **语言**: TypeScript
+- **样式**: Tailwind CSS + CSS Modules
+- **UI组件**: 自定义中式设计组件库
+- **动画**: Framer Motion
 
-## 快速开始
+### 后端技术栈
+- **主要后端**: Rust + Warp (高性能异步 API)
+- **数据库**: PostgreSQL 15 + SQLx (类型安全)
+- **缓存**: Redis 7 (异步连接)
+- **认证**: JWT + bcrypt (Rust 实现)
+- **序列化**: Serde (JSON 处理)
+
+### 基础设施
+- **包管理器**: Bun 1.2.19 (前端) + Cargo (Rust 后端)
+- **容器化**: Docker + Docker Compose
+- **反向代理**: Caddy
+- **开发工具**: TypeScript, ESLint, Prettier, Rust analyzer
+- **测试**: Jest (前端) + Playwright (E2E)
+
+## 📦 快速开始
 
 ### 环境要求
 
-- Node.js 16.0+
-- MySQL 8.0+
-- npm 或 yarn
+- **Bun 1.0+** (前端开发)
+- **Rust 1.75+** (后端开发)
+- Docker + Docker Compose (推荐)
+- PostgreSQL 15+ (或使用 Docker)
+- Redis 7+ (或使用 Docker)
 
-### 本地开发
+### 🐳 使用 Docker (推荐)
 
 1. **克隆项目**
    ```bash
@@ -41,9 +56,32 @@
    cd TraditionalChineseStudy
    ```
 
+2. **启动开发环境**
+   ```bash
+   # 启动所有服务 (Next.js + PostgreSQL + Redis + Caddy)
+   docker-compose up -d
+   
+   # 查看服务状态
+   docker-compose ps
+   ```
+
+3. **访问应用**
+   - 前端应用: http://localhost:3000
+   - API后端: http://localhost:9005 (仅管理功能)
+   - Caddy管理: http://localhost:2019
+   - PostgreSQL: localhost:5432
+   - Redis: localhost:6379
+
+### 💻 本地开发
+
+1. **安装 Bun**
+   ```bash
+   curl -fsSL https://bun.sh/install | bash
+   ```
+
 2. **安装依赖**
    ```bash
-   npm install
+   bun install
    ```
 
 3. **配置环境变量**
@@ -335,6 +373,16 @@ npm test
 # 代码检查
 npm run lint
 ```
+
+## 文档
+
+详细文档请查看 `docs/` 目录：
+
+- [快速开始指南](docs/QUICK_START.md) - 快速部署和开发指南
+- [产品需求文档](docs/PRD.md) - 完整产品规格
+- [设计系统](docs/DESIGN_SYSTEM.md) - UI/UX 设计规范
+- [技术升级计划](docs/TECH_UPGRADE_PLAN.md) - 技术栈演进计划
+- [数据库迁移指南](docs/MIGRATION_GUIDE.md) - MySQL 到 PostgreSQL 迁移
 
 ## 支持与反馈
 

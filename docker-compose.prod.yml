@@ -1,0 +1,232 @@
+services:
+  # Caddy reverse proxy and web server
+  caddy:
+    image: caddy:2-alpine
+    container_name: xxdsl-caddy-prod
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '2019:2019'  # Admin API (localhost only)
+      - '2020:2020'  # Metrics
+    volumes:
+      - ./caddy/Caddyfile.docker:/etc/caddy/Caddyfile
+      - xxdsl_caddy_data_prod:/data
+      - xxdsl_caddy_config_prod:/config
+    networks:
+      - xxdsl-network-prod
+    depends_on:
+      - app
+      - nextjs
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=caddy'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'caddy', 'version']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.2'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+
+  mysql:
+    image: mysql:8.4
+    container_name: xxdsl-mysql-prod
+    restart: unless-stopped
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: xiaoxiao_dushulang
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - xxdsl_mysql_data_prod:/var/lib/mysql
+      - ./scripts/mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - xxdsl-network-prod
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=mysql'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 20s
+      retries: 10
+      interval: 30s
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+      --max-connections=100
+      --query-cache-type=1
+      --query-cache-size=64M
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # Next.js frontend application
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+      target: runner
+    container_name: xxdsl-nextjs-prod
+    restart: unless-stopped
+    ports:
+      - '3001:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: '0.0.0.0'
+    networks:
+      - xxdsl-network-prod
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=nextjs'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.3'
+        reservations:
+          memory: 128M
+          cpus: '0.15'
+
+  # Express backend application
+  app:
+    build:
+      context: .
+      target: express-production
+    container_name: xxdsl-app-prod
+    restart: unless-stopped
+    ports:
+      - '9006:9005'
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASS: ${MYSQL_PASSWORD}
+      DB_NAME: xiaoxiao_dushulang
+      SESSION_SECRET: ${SESSION_SECRET}
+      ADMIN_PASS: ${ADMIN_PASS}
+      PORT: 9005
+      CDN_HANZI: https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js
+      CDN_BOOTSTRAP: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css
+      CDN_TINYMCE: https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js
+    volumes:
+      - xxdsl_app_logs_prod:/app/logs
+      - xxdsl_app_uploads_prod:/app/uploads
+    networks:
+      - xxdsl-network-prod
+    depends_on:
+      mysql:
+        condition: service_healthy
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=app'
+      - 'version=2.0.0'
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: xxdsl-redis-prod
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - xxdsl_redis_data_prod:/data
+    networks:
+      - xxdsl-network-prod
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=redis'
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  xxdsl_caddy_data_prod:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=caddy'
+
+  xxdsl_caddy_config_prod:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=caddy'
+
+  xxdsl_mysql_data_prod:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=mysql'
+
+  xxdsl_app_logs_prod:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=app'
+
+  xxdsl_app_uploads_prod:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=app'
+
+  xxdsl_redis_data_prod:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'
+      - 'service=redis'
+
+networks:
+  xxdsl-network-prod:
+    driver: bridge
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=production'

@@ -1,92 +1,183 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: xxdsl-mysql-dev
+  # Caddy reverse proxy and web server
+  caddy:
+    image: caddy:2-alpine
+    container_name: xxdsl-caddy-dev
     restart: unless-stopped
     ports:
-      - "3308:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: xiaoxiao_dushulang
-      MYSQL_USER: xxdsl_user
-      MYSQL_PASSWORD: xxdsl_password
+      - '80:80'
+      - '443:443'
+      - '2019:2019'  # Admin API
+      - '2020:2020'  # Metrics
     volumes:
-      - xxdsl_mysql_data_dev:/var/lib/mysql
-    networks:
-      - xxdsl-network-dev
-    labels:
-      - "project=xiaoxiao-dushulang"
-      - "environment=development"
-      - "service=mysql"
-      - "version=1.0.0"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
-      interval: 30s
-    command: --default-authentication-plugin=mysql_native_password
-
-  app:
-    build: .
-    container_name: xxdsl-app-dev
-    restart: unless-stopped
-    ports:
-      - "9005:9005"
-    environment:
-      NODE_ENV: development
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: xxdsl_user
-      DB_PASS: xxdsl_password
-      DB_NAME: xiaoxiao_dushulang
-      SESSION_SECRET: xiaoxiao-dushulang-dev-secret-key
-      ADMIN_PASS: 123456
-      PORT: 9005
-      CDN_HANZI: https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js
-      CDN_BOOTSTRAP: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css
-      CDN_TINYMCE: https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js
-    volumes:
-      - xxdsl_app_logs_dev:/app/logs
-      - xxdsl_app_uploads_dev:/app/uploads
-      - .:/app
-      - /app/node_modules
-    command: npm run dev
+      - ./caddy/Caddyfile.docker:/etc/caddy/Caddyfile
+      - xxdsl_caddy_data_dev:/data
+      - xxdsl_caddy_config_dev:/config
     networks:
       - xxdsl-network-dev
     depends_on:
-      mysql:
+      - app
+      - nextjs
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=caddy'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'caddy', 'version']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: xxdsl-postgres-dev
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: xiaoxiao_dushulang
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: xiaoxiao123
+    volumes:
+      - xxdsl_postgres_data_dev:/var/lib/postgresql/data
+    networks:
+      - xxdsl-network-dev
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=postgres'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      timeout: 20s
+      retries: 10
+      interval: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: xxdsl-redis-dev
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    networks:
+      - xxdsl-network-dev
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=redis'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      timeout: 20s
+      retries: 10
+      interval: 30s
+
+  # Next.js frontend application
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+      target: runner
+    container_name: xxdsl-nextjs-dev
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      HOSTNAME: '0.0.0.0'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - xxdsl-network-dev
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=nextjs'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Rust backend application
+  app:
+    build:
+      context: ./backend-rust
+      dockerfile: Dockerfile
+    container_name: xxdsl-rust-backend-dev
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    environment:
+      RUST_LOG: info
+      RUST_BACKTRACE: 1
+      PORT: 8080
+      DATABASE_URL: postgresql://postgres:xiaoxiao123@postgres:5432/xiaoxiao_dushulang
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: xiaoxiao-dushulang-dev-jwt-secret-key
+      CORS_ORIGINS: http://localhost:3000,http://localhost:80
+    networks:
+      - xxdsl-network-dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     labels:
-      - "project=xiaoxiao-dushulang"
-      - "environment=development"
-      - "service=app"
-      - "version=1.0.0"
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=rust-backend'
+      - 'version=2.0.0'
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:8080/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 volumes:
-  xxdsl_mysql_data_dev:
+  xxdsl_caddy_data_dev:
     driver: local
     labels:
-      - "project=xiaoxiao-dushulang"
-      - "environment=development"
-      - "service=mysql"
-  
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=caddy'
+
+  xxdsl_caddy_config_dev:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=caddy'
+
+  xxdsl_postgres_data_dev:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=postgres'
+
   xxdsl_app_logs_dev:
     driver: local
     labels:
-      - "project=xiaoxiao-dushulang"
-      - "environment=development"
-      - "service=app"
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=app'
 
   xxdsl_app_uploads_dev:
     driver: local
     labels:
-      - "project=xiaoxiao-dushulang"
-      - "environment=development"
-      - "service=app"
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=app'
 
 networks:
   xxdsl-network-dev:
     driver: bridge
     labels:
-      - "project=xiaoxiao-dushulang"
-      - "environment=development"
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'

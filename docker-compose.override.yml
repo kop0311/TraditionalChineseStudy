@@ -1,0 +1,87 @@
+# Docker Compose Override for Development
+# This file extends docker-compose.yml for development-specific configurations
+
+services:
+  # Development-specific Caddy configuration
+  caddy:
+    volumes:
+      - ./caddy/Caddyfile.docker:/etc/caddy/Caddyfile:ro
+    environment:
+      - CADDY_ADMIN=0.0.0.0:2019
+    command: caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch
+
+  # Development Next.js with hot reloading
+  nextjs:
+    build:
+      target: base
+    command: npm run dev:next
+    environment:
+      - NODE_ENV=development
+      - FAST_REFRESH=true
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    stdin_open: true
+    tty: true
+
+  # Development Express with nodemon
+  app:
+    build:
+      target: development
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - DEBUG=app:*
+    volumes:
+      - .:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # Development database with exposed port
+  mysql:
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=xiaoxiao_dushulang
+      - MYSQL_USER=xxdsl_user
+      - MYSQL_PASSWORD=xxdsl_password
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --general-log=1
+      --general-log-file=/var/lib/mysql/general.log
+
+  # Redis for development (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: xxdsl-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - xxdsl_redis_data_dev:/data
+    networks:
+      - xxdsl-network-dev
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=redis'
+    command: redis-server --appendonly yes --maxmemory 64mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  xxdsl_redis_data_dev:
+    driver: local
+    labels:
+      - 'project=xiaoxiao-dushulang'
+      - 'environment=development'
+      - 'service=redis'

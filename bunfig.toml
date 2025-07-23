@@ -1,0 +1,41 @@
+# Bun configuration file
+[install]
+# Automatically install and cache dependencies
+auto = true
+exact = false
+cache = true
+dev = true
+production = false
+optional = true
+
+# Package management settings
+registry = "https://registry.npmjs.org/"
+lockfile = true
+
+[install.scopes]
+# Use npm registry for all packages
+"@types" = "https://registry.npmjs.org/"
+
+[test]
+# Test configuration
+preload = ["./tests/setup.js"]
+root = "."
+
+[run]
+# Runtime configuration
+bunfig = "bunfig.toml"
+shell = "system"
+
+# Environment variables
+[env]
+NODE_ENV = "development"
+
+# Build configuration
+[build]
+target = "node"
+minify = false
+sourcemap = "external"
+
+# Logging
+[log]
+level = "info"

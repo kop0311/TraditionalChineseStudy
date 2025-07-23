@@ -1,0 +1,192 @@
+# Traditional Chinese Study Application - Docker Caddy Configuration
+
+# Global options
+{
+    admin 0.0.0.0:2019
+    auto_https off
+    
+    servers {
+        protocol {
+            experimental_http3
+        }
+    }
+}
+
+# Development configuration
+:80 {
+    # Enable logging
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+    
+    # Error handling
+    handle_errors {
+        @404 expression {http.error.status_code} == 404
+        handle @404 {
+            respond "页面未找到" 404
+        }
+        
+        @5xx expression {http.error.status_code} >= 500
+        handle @5xx {
+            respond "服务器内部错误，请稍后重试" 500
+        }
+    }
+    
+    # Static assets from Next.js
+    handle /static/* {
+        reverse_proxy nextjs:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+    
+    # Next.js assets
+    handle /_next/* {
+        reverse_proxy nextjs:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+    
+    # API routes (Express backend)
+    handle /api/* {
+        reverse_proxy app:9005 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+            
+            # Health check
+            health_uri /ping
+            health_interval 30s
+            health_timeout 5s
+        }
+    }
+    
+    # Authentication routes
+    handle /auth/* {
+        reverse_proxy app:9005 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+    
+    # Admin routes
+    handle /admin/* {
+        reverse_proxy app:9005 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+    
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200
+    }
+    
+    # Ping endpoint for load balancer
+    handle /ping {
+        respond "pong" 200
+    }
+    
+    # Robots.txt
+    handle /robots.txt {
+        respond `User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/`
+    }
+    
+    # All other routes go to Next.js
+    handle {
+        reverse_proxy nextjs:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+            
+            # Health check for Next.js
+            health_uri /
+            health_interval 30s
+            health_timeout 10s
+        }
+    }
+}
+
+# Production configuration with SSL
+# :443 {
+#     tls internal
+#     
+#     # Enable logging
+#     log {
+#         output stdout
+#         format json
+#         level INFO
+#     }
+#     
+#     # Rate limiting for production
+#     rate_limit {
+#         zone static {
+#             key {remote_host}
+#             events 100
+#             window 1m
+#         }
+#         zone api {
+#             key {remote_host}
+#             events 30
+#             window 1m
+#         }
+#     }
+#     
+#     # Apply rate limiting to API routes
+#     handle /api/* {
+#         rate_limit api
+#         reverse_proxy app:9005 {
+#             header_up Host {host}
+#             header_up X-Real-IP {remote}
+#             header_up X-Forwarded-For {remote}
+#             header_up X-Forwarded-Proto {scheme}
+#         }
+#     }
+#     
+#     # Static content with rate limiting
+#     handle /static/* {
+#         rate_limit static
+#         reverse_proxy nextjs:3000 {
+#             header_up Host {host}
+#             header_up X-Real-IP {remote}
+#             header_up X-Forwarded-For {remote}
+#             header_up X-Forwarded-Proto {scheme}
+#         }
+#         header Cache-Control "public, max-age=31536000, immutable"
+#     }
+#     
+#     # All other routes with rate limiting
+#     handle {
+#         rate_limit static
+#         reverse_proxy nextjs:3000 {
+#             header_up Host {host}
+#             header_up X-Real-IP {remote}
+#             header_up X-Forwarded-For {remote}
+#             header_up X-Forwarded-Proto {scheme}
+#         }
+#     }
+# }
+
+# Metrics endpoint for monitoring
+:2020 {
+    bind 0.0.0.0
+    metrics /metrics
+}
