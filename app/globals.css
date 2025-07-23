@@ -1,5 +1,10 @@
 /* Traditional Chinese Study Application - Enhanced Design System */
 
+/* Tailwind CSS Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   /* ===== TRADITIONAL CHINESE COLOR PALETTE ===== */
   /* Based on traditional Chinese colors with cultural significance */

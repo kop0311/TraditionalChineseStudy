@@ -31,11 +31,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
-        {/* Bootstrap CSS */}
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-        />
+        {/* Tailwind CSS is included via globals.css */}
 
         {/* Security headers */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
@@ -46,95 +42,83 @@ export default function RootLayout({
         <meta httpEquiv="X-DNS-Prefetch-Control" content="on" />
         <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
       </head>
-      <body className={inter.className} style={{ backgroundColor: 'var(--background-color)', color: 'var(--text-primary)' }}>
+      <body className={inter.className}>
         <div id="root">
-          <header className="navbar navbar-expand-lg" style={{
-            background: 'linear-gradient(135deg, var(--primary-color), var(--primary-dark))',
-            boxShadow: 'var(--shadow-md)',
-            borderBottom: '1px solid var(--border-color)'
-          }}>
-            <div className="container">
-              <a className="navbar-brand chinese-text" href="/" style={{
-                color: 'var(--primary-contrast)',
-                fontSize: 'var(--font-size-xl)',
-                fontWeight: '700',
-                textDecoration: 'none'
-              }}>
-                <span className="text-gradient" style={{ color: 'var(--primary-contrast)' }}>小小读书郎</span>
-              </a>
-              <nav className="navbar-nav ms-auto d-flex flex-row gap-3">
-                <a className="nav-link chinese-text" href="/classics" style={{
-                  color: 'var(--primary-contrast)',
-                  transition: 'var(--transition-fast)',
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  borderRadius: 'var(--radius-md)'
-                }}>
-                  📚 经典阅读
+          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container mx-auto max-w-7xl px-6">
+              <div className="flex h-16 items-center justify-between">
+                <a href="/" className="flex items-center space-x-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600">
+                    <span className="text-white font-bold text-sm">学</span>
+                  </div>
+                  <span className="text-xl font-bold text-gray-900">小小读书郎</span>
                 </a>
-                <a className="nav-link chinese-text" href="/enhanced-writing" style={{
-                  color: 'var(--primary-contrast)',
-                  transition: 'var(--transition-fast)',
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  borderRadius: 'var(--radius-md)'
-                }}>
-                  ✍️ 汉字练习
-                </a>
-                <a className="nav-link chinese-text" href="/pinyin-practice" style={{
-                  color: 'var(--primary-contrast)',
-                  transition: 'var(--transition-fast)',
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  borderRadius: 'var(--radius-md)'
-                }}>
-                  🎵 拼音练习
-                </a>
-                <a className="nav-link" href="/magic-ui" style={{
-                  color: 'var(--accent-color)',
-                  transition: 'var(--transition-fast)',
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--accent-color)',
-                  fontSize: 'var(--font-size-sm)'
-                }}>
-                  🎨 Magic UI
-                </a>
-              </nav>
+                <nav className="hidden md:flex items-center space-x-1">
+                  <a 
+                    href="/classics" 
+                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  >
+                    📚 经典阅读
+                  </a>
+                  <a 
+                    href="/enhanced-writing" 
+                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  >
+                    ✍️ 汉字练习
+                  </a>
+                  <a 
+                    href="/pinyin-practice" 
+                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  >
+                    🎵 拼音练习
+                  </a>
+                  <a 
+                    href="/magic-ui" 
+                    className="ml-2 px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                  >
+                    🎨 Magic UI
+                  </a>
+                </nav>
+                {/* Mobile menu button */}
+                <button className="md:hidden p-2 text-gray-600 hover:text-gray-900">
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </header>
 
-          <main className="container-fluid" style={{ minHeight: '80vh' }}>
+          <main className="min-h-screen">
             {children}
           </main>
 
-          <footer className="text-center py-4 mt-5" style={{
-            background: 'var(--surface-secondary)',
-            borderTop: '1px solid var(--border-light)',
-            color: 'var(--text-secondary)'
-          }}>
-            <div className="container">
-              <div className="row">
-                <div className="col-12">
-                  <p className="chinese-text mb-2" style={{ fontSize: 'var(--font-size-lg)' }}>
-                    传承中华文化，启蒙智慧人生
-                  </p>
-                  <p className="mb-0" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
-                    © 2024 小小读书郎 - Traditional Chinese Study Platform
-                  </p>
-                  <div className="mt-3">
-                    <span style={{ color: 'var(--primary-color)' }}>🏮</span>
-                    <span className="mx-2" style={{ color: 'var(--secondary-color)' }}>🐉</span>
-                    <span style={{ color: 'var(--accent-color)' }}>🏮</span>
+          <footer className="border-t bg-gray-50">
+            <div className="container mx-auto max-w-7xl px-6 py-12">
+              <div className="text-center space-y-4">
+                <div className="flex justify-center items-center space-x-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600">
+                    <span className="text-white font-bold text-sm">学</span>
                   </div>
+                  <span className="text-xl font-bold text-gray-900">小小读书郎</span>
+                </div>
+                <p className="text-lg font-medium text-gray-700">
+                  传承中华文化，启蒙智慧人生
+                </p>
+                <p className="text-sm text-gray-500">
+                  © 2024 小小读书郎 - Traditional Chinese Study Platform
+                </p>
+                <div className="flex justify-center space-x-4 text-2xl">
+                  <span>🏮</span>
+                  <span>🐉</span>
+                  <span>🏮</span>
                 </div>
               </div>
             </div>
           </footer>
         </div>
         
-        {/* Load Bootstrap JS */}
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-          async
-        />
+        {/* Modern UI with Tailwind and shadcn/ui */}
         
         {/* Load Hanzi Writer */}
         <script
