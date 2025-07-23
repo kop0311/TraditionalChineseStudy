@@ -9,53 +9,112 @@
   /* ===== ADVANCED COLOR PALETTE (2024 REFINED) ===== */
   /* Sophisticated color system with HSL for better manipulation */
   
-  /* Primary Vermillion System */
-  --vermillion-50: hsl(0, 70%, 97%);
-  --vermillion-100: hsl(0, 65%, 92%);
-  --vermillion-200: hsl(0, 68%, 85%);
-  --vermillion-300: hsl(0, 70%, 75%);
-  --vermillion-400: hsl(0, 72%, 65%);
-  --vermillion-500: hsl(0, 72%, 57%);
-  --vermillion-600: hsl(0, 72%, 45%);
-  --vermillion-700: hsl(0, 75%, 35%);
-  --vermillion-800: hsl(0, 75%, 28%);
-  --vermillion-900: hsl(0, 75%, 20%);
+  /* 传统国画颜料色系 - Traditional Chinese Painting Pigments */
   
-  /* Imperial Gold System */
-  --gold-50: hsl(45, 90%, 96%);
-  --gold-100: hsl(45, 88%, 92%);
-  --gold-200: hsl(45, 90%, 85%);
-  --gold-300: hsl(45, 92%, 75%);
-  --gold-400: hsl(45, 95%, 65%);
-  --gold-500: hsl(45, 90%, 55%);
-  --gold-600: hsl(45, 85%, 45%);
-  --gold-700: hsl(45, 80%, 35%);
-  --gold-800: hsl(45, 75%, 28%);
-  --gold-900: hsl(45, 70%, 20%);
+  /* 墨韵黑 (Ink Black) - Traditional calligraphy ink */
+  --ink-50: hsl(210, 8%, 98%);    /* 宣纸白 */
+  --ink-100: hsl(210, 10%, 95%);  /* 淡墨色 */
+  --ink-200: hsl(210, 12%, 88%);  /* 浅墨色 */
+  --ink-300: hsl(210, 15%, 75%);  /* 中墨色 */
+  --ink-400: hsl(210, 18%, 55%);  /* 浓墨色 */
+  --ink-500: hsl(210, 20%, 40%);  /* 重墨色 */
+  --ink-600: hsl(210, 22%, 30%);  /* 焦墨色 */
+  --ink-700: hsl(210, 25%, 22%);  /* 墨韵黑 */
+  --ink-800: hsl(210, 28%, 18%);  /* 深墨色 */
+  --ink-900: hsl(210, 30%, 15%);  /* 纯墨色 */
+
+  /* 朱砂红 (Cinnabar Red) - Traditional cinnabar pigment */
+  --cinnabar-50: hsl(0, 30%, 98%);   /* 淡朱砂 */
+  --cinnabar-100: hsl(0, 35%, 95%);  /* 浅朱砂 */
+  --cinnabar-200: hsl(0, 40%, 88%);  /* 轻朱砂 */
+  --cinnabar-300: hsl(0, 45%, 78%);  /* 中朱砂 */
+  --cinnabar-400: hsl(0, 48%, 68%);  /* 朱砂色 */
+  --cinnabar-500: hsl(0, 50%, 58%);  /* 正朱砂 */
+  --cinnabar-600: hsl(0, 52%, 48%);  /* 浓朱砂 */
+  --cinnabar-700: hsl(0, 55%, 38%);  /* 深朱砂 */
+  --cinnabar-800: hsl(0, 58%, 30%);  /* 重朱砂 */
+  --cinnabar-900: hsl(0, 60%, 25%);  /* 焦朱砂 */
   
-  /* Jade Green System */
-  --jade-50: hsl(160, 60%, 96%);
-  --jade-100: hsl(160, 55%, 92%);
-  --jade-200: hsl(160, 60%, 85%);
-  --jade-300: hsl(160, 65%, 75%);
-  --jade-400: hsl(160, 70%, 60%);
-  --jade-500: hsl(160, 75%, 45%);
-  --jade-600: hsl(160, 80%, 35%);
-  --jade-700: hsl(160, 82%, 28%);
-  --jade-800: hsl(160, 85%, 22%);
-  --jade-900: hsl(160, 88%, 16%);
+  /* 藤黄 (Rattan Yellow) - Traditional rattan yellow pigment */
+  --rattan-50: hsl(48, 25%, 98%);    /* 淡藤黄 */
+  --rattan-100: hsl(48, 30%, 95%);   /* 浅藤黄 */
+  --rattan-200: hsl(48, 35%, 88%);   /* 轻藤黄 */
+  --rattan-300: hsl(48, 40%, 80%);   /* 中藤黄 */
+  --rattan-400: hsl(48, 45%, 72%);   /* 藤黄色 */
+  --rattan-500: hsl(48, 50%, 65%);   /* 正藤黄 */
+  --rattan-600: hsl(48, 55%, 55%);   /* 浓藤黄 */
+  --rattan-700: hsl(48, 60%, 45%);   /* 深藤黄 */
+  --rattan-800: hsl(48, 65%, 35%);   /* 重藤黄 */
+  --rattan-900: hsl(48, 70%, 28%);   /* 焦藤黄 */
   
-  /* Plum Purple System */
-  --plum-50: hsl(285, 40%, 96%);
-  --plum-100: hsl(285, 35%, 92%);
-  --plum-200: hsl(285, 40%, 85%);
-  --plum-300: hsl(285, 45%, 75%);
-  --plum-400: hsl(285, 50%, 65%);
-  --plum-500: hsl(285, 55%, 55%);
-  --plum-600: hsl(285, 60%, 45%);
-  --plum-700: hsl(285, 65%, 35%);
-  --plum-800: hsl(285, 68%, 28%);
-  --plum-900: hsl(285, 70%, 20%);
+  /* 花青绿 (Flower Blue-Green) - Traditional blue-green pigment */
+  --flower-blue-50: hsl(180, 20%, 97%);   /* 淡花青 */
+  --flower-blue-100: hsl(180, 25%, 94%);  /* 浅花青 */
+  --flower-blue-200: hsl(180, 30%, 88%);  /* 轻花青 */
+  --flower-blue-300: hsl(180, 35%, 78%);  /* 中花青 */
+  --flower-blue-400: hsl(180, 40%, 65%);  /* 花青色 */
+  --flower-blue-500: hsl(180, 42%, 55%);  /* 正花青 */
+  --flower-blue-600: hsl(180, 45%, 45%);  /* 浓花青 */
+  --flower-blue-700: hsl(180, 48%, 35%);  /* 深花青 */
+  --flower-blue-800: hsl(180, 50%, 28%);  /* 重花青 */
+  --flower-blue-900: hsl(180, 52%, 22%);  /* 焦花青 */
+  
+  /* 胭脂红 (Rouge Red) - Traditional rouge pigment */
+  --rouge-50: hsl(350, 25%, 97%);    /* 淡胭脂 */
+  --rouge-100: hsl(350, 30%, 94%);   /* 浅胭脂 */
+  --rouge-200: hsl(350, 35%, 88%);   /* 轻胭脂 */
+  --rouge-300: hsl(350, 40%, 78%);   /* 中胭脂 */
+  --rouge-400: hsl(350, 45%, 70%);   /* 胭脂色 */
+  --rouge-500: hsl(350, 48%, 62%);   /* 正胭脂 */
+  --rouge-600: hsl(350, 50%, 52%);   /* 浓胭脂 */
+  --rouge-700: hsl(350, 52%, 42%);   /* 深胭脂 */
+  --rouge-800: hsl(350, 55%, 32%);   /* 重胭脂 */
+  --rouge-900: hsl(350, 58%, 25%);   /* 焦胭脂 */
+
+  /* Legacy color mapping for compatibility */
+  --vermillion-50: var(--cinnabar-50);
+  --vermillion-100: var(--cinnabar-100);
+  --vermillion-200: var(--cinnabar-200);
+  --vermillion-300: var(--cinnabar-300);
+  --vermillion-400: var(--cinnabar-400);
+  --vermillion-500: var(--cinnabar-500);
+  --vermillion-600: var(--cinnabar-600);
+  --vermillion-700: var(--cinnabar-700);
+  --vermillion-800: var(--cinnabar-800);
+  --vermillion-900: var(--cinnabar-900);
+
+  --gold-50: var(--rattan-50);
+  --gold-100: var(--rattan-100);
+  --gold-200: var(--rattan-200);
+  --gold-300: var(--rattan-300);
+  --gold-400: var(--rattan-400);
+  --gold-500: var(--rattan-500);
+  --gold-600: var(--rattan-600);
+  --gold-700: var(--rattan-700);
+  --gold-800: var(--rattan-800);
+  --gold-900: var(--rattan-900);
+
+  --jade-50: var(--flower-blue-50);
+  --jade-100: var(--flower-blue-100);
+  --jade-200: var(--flower-blue-200);
+  --jade-300: var(--flower-blue-300);
+  --jade-400: var(--flower-blue-400);
+  --jade-500: var(--flower-blue-500);
+  --jade-600: var(--flower-blue-600);
+  --jade-700: var(--flower-blue-700);
+  --jade-800: var(--flower-blue-800);
+  --jade-900: var(--flower-blue-900);
+
+  --plum-50: var(--rouge-50);
+  --plum-100: var(--rouge-100);
+  --plum-200: var(--rouge-200);
+  --plum-300: var(--rouge-300);
+  --plum-400: var(--rouge-400);
+  --plum-500: var(--rouge-500);
+  --plum-600: var(--rouge-600);
+  --plum-700: var(--rouge-700);
+  --plum-800: var(--rouge-800);
+  --plum-900: var(--rouge-900);
   
   /* Glass Morphism System */
   --glass-bg-light: rgba(255, 255, 255, 0.1);
@@ -66,17 +125,23 @@
   --glass-blur: blur(20px);
   --glass-saturate: saturate(180%);
   
-  /* Legacy colors for compatibility */
-  --color-vermillion: var(--vermillion-500);
-  --color-imperial-yellow: var(--gold-400);
-  --color-jade-green: var(--jade-500);
-  --color-ink-black: #1A202C;
-  --color-rice-white: #FFFEF7;
-  --color-bamboo-green: var(--jade-600);
-  --color-plum-purple: var(--plum-500);
-  --color-cloud-gray: #E2E8F0;
-  --color-gold-accent: var(--gold-600);
-  --color-tea-brown: #8B4513;
+  /* Traditional Chinese cultural colors - 传统文化色彩 */
+  --color-ink-black: var(--ink-700);           /* 墨韵黑 */
+  --color-rice-white: var(--ink-50);           /* 宣纸白 */
+  --color-cinnabar: var(--cinnabar-500);       /* 朱砂红 */
+  --color-rattan-yellow: var(--rattan-500);    /* 藤黄 */
+  --color-flower-blue: var(--flower-blue-500); /* 花青绿 */
+  --color-rouge: var(--rouge-500);             /* 胭脂红 */
+  
+  /* Legacy compatibility colors */
+  --color-vermillion: var(--cinnabar-500);
+  --color-imperial-yellow: var(--rattan-400);
+  --color-jade-green: var(--flower-blue-500);
+  --color-bamboo-green: var(--flower-blue-600);
+  --color-plum-purple: var(--rouge-500);
+  --color-cloud-gray: var(--ink-200);
+  --color-gold-accent: var(--rattan-600);
+  --color-tea-brown: var(--ink-600);
 
   /* ===== SEMANTIC COLOR SYSTEM ===== */
   /* Primary Brand Colors */
@@ -1783,30 +1848,100 @@ a:focus {
   letter-spacing: -0.015em;
 }
 
-/* Sophisticated Gradients */
+/* Traditional Chinese Painting Gradients - 传统国画渐变 */
+.gradient-cinnabar {
+  background: linear-gradient(135deg, var(--cinnabar-300), var(--cinnabar-400), var(--cinnabar-500));
+}
+
+.gradient-rattan {
+  background: linear-gradient(135deg, var(--rattan-300), var(--rattan-400), var(--rattan-500));
+}
+
+.gradient-flower-blue {
+  background: linear-gradient(135deg, var(--flower-blue-300), var(--flower-blue-400), var(--flower-blue-500));
+}
+
+.gradient-rouge {
+  background: linear-gradient(135deg, var(--rouge-300), var(--rouge-400), var(--rouge-500));
+}
+
+.gradient-ink {
+  background: linear-gradient(135deg, var(--ink-300), var(--ink-400), var(--ink-500));
+}
+
+/* Traditional harmony gradients - 传统和谐渐变 */
+/* Inspired by classical Chinese painting color combinations - 古典国画配色灵感 */
+.gradient-ink-cinnabar {
+  background: linear-gradient(135deg, var(--ink-400), var(--cinnabar-300));
+}
+
+.gradient-cinnabar-rattan {
+  background: linear-gradient(135deg, var(--cinnabar-300), var(--rattan-300));
+}
+
+.gradient-flower-rattan {
+  background: linear-gradient(135deg, var(--flower-blue-300), var(--rattan-300));
+}
+
+.gradient-rouge-ink {
+  background: linear-gradient(135deg, var(--rouge-300), var(--ink-300));
+}
+
+.gradient-traditional-spring {
+  background: linear-gradient(135deg, 
+    var(--flower-blue-200), 
+    var(--rattan-200), 
+    var(--rouge-100)
+  );
+}
+
+.gradient-traditional-autumn {
+  background: linear-gradient(135deg, 
+    var(--rattan-200), 
+    var(--cinnabar-200), 
+    var(--ink-200)
+  );
+}
+
+.gradient-traditional-sunset {
+  background: linear-gradient(135deg, 
+    var(--rattan-200), 
+    var(--cinnabar-200), 
+    var(--rouge-100), 
+    var(--flower-blue-100)
+  );
+}
+
+.gradient-traditional-dawn {
+  background: linear-gradient(135deg, 
+    var(--ink-100), 
+    var(--flower-blue-100), 
+    var(--rattan-100)
+  );
+}
+
+/* Legacy gradient compatibility - 兼容性映射 */
 .gradient-vermillion {
-  background: linear-gradient(135deg, var(--vermillion-400), var(--vermillion-600), var(--vermillion-500));
+  background: linear-gradient(135deg, var(--cinnabar-300), var(--cinnabar-400));
 }
 
 .gradient-gold {
-  background: linear-gradient(135deg, var(--gold-300), var(--gold-500), var(--gold-400));
+  background: linear-gradient(135deg, var(--rattan-300), var(--rattan-400));
 }
 
 .gradient-jade {
-  background: linear-gradient(135deg, var(--jade-300), var(--jade-500), var(--jade-400));
+  background: linear-gradient(135deg, var(--flower-blue-300), var(--flower-blue-400));
 }
 
 .gradient-plum {
-  background: linear-gradient(135deg, var(--plum-300), var(--plum-500), var(--plum-400));
+  background: linear-gradient(135deg, var(--rouge-300), var(--rouge-400));
 }
 
 .gradient-sunset {
   background: linear-gradient(135deg, 
-    hsl(355, 78%, 75%), 
-    hsl(25, 85%, 70%), 
-    hsl(45, 90%, 75%), 
-    hsl(165, 45%, 85%), 
-    hsl(210, 70%, 90%)
+    var(--rattan-200), 
+    var(--cinnabar-200), 
+    var(--rouge-100)
   );
 }
 
@@ -1896,25 +2031,25 @@ a:focus {
   font-weight: 800;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, 
-    var(--vermillion-600) 0%, 
-    var(--gold-500) 35%, 
-    var(--jade-600) 70%, 
-    var(--plum-600) 100%);
+    var(--ink-600) 0%, 
+    var(--cinnabar-500) 35%, 
+    var(--flower-blue-500) 70%, 
+    var(--rouge-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
 .text-silk {
   font-family: var(--chinese-font-family);
   background: linear-gradient(135deg, 
-    var(--vermillion-500) 0%, 
-    var(--gold-400) 100%);
+    var(--cinnabar-400) 0%, 
+    var(--rattan-300) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.06));
 }
 
 .text-shadow-elegant {
@@ -1966,7 +2101,7 @@ a:focus {
 
 /* Sophisticated Buttons */
 .btn-imperial {
-  background: linear-gradient(135deg, var(--vermillion-500), var(--vermillion-600));
+  background: linear-gradient(135deg, var(--cinnabar-400), var(--cinnabar-500));
   color: white;
   border: none;
   border-radius: var(--radius-lg);
@@ -2000,7 +2135,7 @@ a:focus {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
+  background: linear-gradient(135deg, var(--rattan-300), var(--rattan-400));
   opacity: 0;
   transition: opacity var(--transition-normal);
 }
@@ -2009,7 +2144,7 @@ a:focus {
   transform: translateY(-3px) scale(1.05);
   box-shadow: 
     var(--shadow-4),
-    0 10px 30px rgba(229,62,62,0.3);
+    0 8px 24px rgba(227, 101, 92, 0.25);
 }
 
 .btn-imperial:hover::before {
@@ -2107,15 +2242,15 @@ a:focus {
   line-height: var(--line-height-tight);
   letter-spacing: -0.025em;
   background: linear-gradient(135deg, 
-    var(--vermillion-700) 0%,
-    var(--vermillion-500) 25%,
-    var(--gold-500) 50%,
-    var(--jade-600) 75%,
-    var(--plum-600) 100%);
+    var(--ink-600) 0%,
+    var(--cinnabar-500) 30%,
+    var(--rattan-400) 60%,
+    var(--flower-blue-500) 90%,
+    var(--rouge-400) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.08);
   position: relative;
 }
 
@@ -2125,12 +2260,12 @@ a:focus {
   bottom: -16px;
   left: 0;
   right: 0;
-  height: 6px;
+  height: 4px;
   background: linear-gradient(90deg, 
-    var(--vermillion-400) 0%,
-    var(--gold-400) 33%,
-    var(--jade-400) 66%,
-    var(--plum-400) 100%);
+    var(--cinnabar-300) 0%,
+    var(--rattan-300) 33%,
+    var(--flower-blue-300) 66%,
+    var(--rouge-300) 100%);
   border-radius: var(--radius-full);
   transform: scaleX(0);
   transform-origin: left;
