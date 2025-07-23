@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { User } from '../../../../lib/models';
+import { DatabaseService } from '@/lib/models';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,9 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user by email
-    const user = await User.findOne({
-      where: { email },
-    });
+    const user = await DatabaseService.findUserByEmail(email);
 
     if (!user) {
       return NextResponse.json(
@@ -36,7 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user is active
-    if (!user.is_active) {
+    if (!user.active) {
       return NextResponse.json(
         {
           success: false,
@@ -48,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
       return NextResponse.json(
         {
@@ -61,12 +59,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Update last login
-    await user.update({
-      last_login: new Date(),
-    });
+    await DatabaseService.updateUserLastLogin(user.id);
 
     // Remove password from response
-    const { password: _, ...userResponse } = user.toJSON();
+    const { password_hash, ...userResponse } = user;
 
     return NextResponse.json({
       success: true,

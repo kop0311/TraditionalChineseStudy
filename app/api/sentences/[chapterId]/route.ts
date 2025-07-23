@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Chapter, Sentence } from '../../../../lib/models';
+import { supabase } from '@/lib/database';
 
 export async function GET(
   request: NextRequest,
