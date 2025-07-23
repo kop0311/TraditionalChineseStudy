@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Classic } from '../../../lib/models';
+import { supabase } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
-    const classics = await Classic.findAll({
-      attributes: ['id', 'slug', 'title', 'author', 'dynasty'],
-    });
+    const { data: classics, error } = await supabase
+      .from('classics')
+      .select('id, slug, title, author, dynasty')
+      .order('created_at');
+
+    if (error) throw error;
 
     return NextResponse.json({
       success: true,

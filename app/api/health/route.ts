@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sequelize } from '../../../lib/models';
+import { supabase } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
-    // Test database connection
-    await sequelize.authenticate();
+    // Test Supabase connection
+    const { data, error } = await supabase
+      .from('users')
+      .select('count')
+      .limit(1);
+
+    if (error) throw error;
     
     const healthData = {
       status: 'healthy',

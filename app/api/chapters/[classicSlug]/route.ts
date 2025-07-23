@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Classic, Chapter } from '../../../../lib/models';
+import { supabase } from '@/lib/database';
 
 export async function GET(
   request: NextRequest,
@@ -20,19 +20,14 @@ export async function GET(
       );
     }
 
-    const classic = await Classic.findOne({
-      where: { slug: classicSlug },
-      include: [
-        {
-          model: Chapter,
-          as: 'chapters',
-          attributes: ['id', 'number', 'title'],
-          order: [['number', 'ASC']],
-        },
-      ],
-    });
+    // First, find the classic by slug
+    const { data: classic, error: classicError } = await supabase
+      .from('classics')
+      .select('id')
+      .eq('slug', classicSlug)
+      .single();
 
-    if (!classic) {
+    if (classicError || !classic) {
       return NextResponse.json(
         {
           success: false,
@@ -43,9 +38,18 @@ export async function GET(
       );
     }
 
+    // Then, get chapters for this classic
+    const { data: chapters, error: chaptersError } = await supabase
+      .from('chapters')
+      .select('id, number, title')
+      .eq('classic_id', classic.id)
+      .order('number');
+
+    if (chaptersError) throw chaptersError;
+
     return NextResponse.json({
       success: true,
-      data: classic.chapters,
+      data: chapters || [],
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
