@@ -1,6 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { ChevronLeft, ChevronRight, BarChart3, Eye, EyeOff } from 'lucide-react'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { StatsPanel } from '@/components/ui/StatsPanel'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import PinyinPractice from '../../components/PinyinPractice'
 
 interface PinyinCharacter {
@@ -31,6 +38,19 @@ const pinyinCharacters: PinyinCharacter[] = [
 ]
 
 const categories = ['全部', '家庭', '日常', '动物', '动作', '称谓', '形容词', '教育', '方位', '地理']
+
+const categoryColors: Record<string, string> = {
+  '全部': 'blue',
+  '家庭': 'emerald',
+  '日常': 'purple',
+  '动物': 'amber',
+  '动作': 'red',
+  '称谓': 'blue',
+  '形容词': 'emerald',
+  '教育': 'purple',
+  '方位': 'amber',
+  '地理': 'red'
+}
 
 export default function PinyinPracticePage() {
   const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0)
@@ -72,7 +92,6 @@ export default function PinyinPracticePage() {
     if (currentCharacterIndex < filteredCharacters.length - 1) {
       setCurrentCharacterIndex(prev => prev + 1)
     } else {
-      // Loop back to first character
       setCurrentCharacterIndex(0)
     }
   }
@@ -81,7 +100,6 @@ export default function PinyinPracticePage() {
     if (currentCharacterIndex > 0) {
       setCurrentCharacterIndex(prev => prev - 1)
     } else {
-      // Loop to last character
       setCurrentCharacterIndex(filteredCharacters.length - 1)
     }
   }
@@ -107,255 +125,326 @@ export default function PinyinPracticePage() {
 
   if (!currentCharacter) {
     return (
-      <div className="container py-5">
+      <PageLayout
+        title="拼音练习"
+        subtitle="学习标准普通话发音，掌握声调变化"
+        description="没有找到符合条件的汉字，请选择其他分类"
+        badge="发音训练平台"
+      >
         <div className="text-center">
-          <h1 className="chinese-title">拼音练习</h1>
-          <p>没有找到符合条件的汉字</p>
+          <p className="text-gray-600">没有找到符合条件的汉字</p>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="container py-5">
-      {/* Page Header */}
-      <div className="text-center mb-4">
-        <h1 className="chinese-title display-4 mb-3">拼音练习</h1>
-        <p className="lead">
-          学习标准普通话发音，掌握声调变化
-        </p>
-      </div>
-
+    <PageLayout
+      title="拼音练习"
+      subtitle="学习标准普通话发音，掌握声调变化"
+      description="通过系统性的拼音练习，掌握准确的发音和声调变化"
+      badge="发音训练平台"
+    >
       {/* Category Filter */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                <div className="mb-2 mb-md-0">
-                  <h6 className="mb-0 chinese-text">选择分类:</h6>
-                </div>
-                <div className="btn-group flex-wrap" role="group">
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      type="button"
-                      className={`btn ${
-                        selectedCategory === category ? 'btn-primary' : 'btn-outline-primary'
-                      } btn-chinese btn-sm`}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
+      <motion.section 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-8"
+      >
+        <Card className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-gray-900">选择分类</CardTitle>
+            <CardDescription>选择您想要练习的汉字分类</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={`transition-all duration-200 ${
+                    selectedCategory === category 
+                      ? `bg-${categoryColors[category]}-600 hover:bg-${categoryColors[category]}-700 text-white` 
+                      : 'hover:bg-gray-50'
+                  }`}
+                >
+                  {category}
+                </Button>
+              ))}
             </div>
-          </div>
-        </div>
-      </div>
+          </CardContent>
+        </Card>
+      </motion.section>
 
       {/* Character Navigation */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="mb-0 chinese-text">
-                  字符进度 ({currentCharacterIndex + 1}/{filteredCharacters.length})
-                </h6>
-                <div className="btn-group" role="group">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-chinese"
-                    onClick={previousCharacter}
-                  >
-                    ← 上一个
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary btn-chinese"
-                    onClick={nextCharacter}
-                  >
-                    下一个 →
-                  </button>
-                </div>
+      <motion.section 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mb-8"
+      >
+        <Card className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-xl font-bold text-gray-900">
+                  字符导航 ({currentCharacterIndex + 1}/{filteredCharacters.length})
+                </CardTitle>
+                <CardDescription>选择要练习的汉字</CardDescription>
               </div>
-              
-              <div className="character-grid">
-                <div className="d-flex flex-wrap gap-2">
-                  {filteredCharacters.map((char, index) => {
-                    const score = getCharacterScore(char.character)
-                    return (
-                      <button
-                        key={index}
-                        type="button"
-                        className={`btn ${
-                          index === currentCharacterIndex ? 'btn-primary' : 
-                          score !== null ? 'btn-success' : 'btn-outline-primary'
-                        } character-selector position-relative`}
-                        onClick={() => selectCharacter(index)}
-                        style={{ minWidth: '60px', height: '60px' }}
-                      >
-                        <span className="chinese-text">{char.character}</span>
-                        {score !== null && (
-                          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
-                            {score}
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={previousCharacter}
+                  className="flex items-center gap-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  上一个
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={nextCharacter}
+                  className="flex items-center gap-1"
+                >
+                  下一个
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {filteredCharacters.map((char, index) => {
+                const score = getCharacterScore(char.character)
+                return (
+                  <Button
+                    key={index}
+                    variant={index === currentCharacterIndex ? 'default' : score !== null ? 'secondary' : 'outline'}
+                    className={`relative h-12 w-12 text-lg font-bold ${
+                      index === currentCharacterIndex 
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                        : score !== null
+                        ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                        : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => selectCharacter(index)}
+                  >
+                    {char.character}
+                    {score !== null && (
+                      <Badge className="absolute -top-2 -right-2 h-5 min-w-5 p-0 text-xs bg-amber-500">
+                        {score}
+                      </Badge>
+                    )}
+                  </Button>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.section>
 
-      {/* Statistics Panel */}
-      <div className="row mb-4">
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-body">
-              <h6 className="chinese-text">当前字符信息</h6>
-              <div className="row">
-                <div className="col-md-6">
-                  <table className="table table-sm">
-                    <tbody>
-                      <tr>
-                        <td>汉字:</td>
-                        <td><strong className="chinese-text fs-4">{currentCharacter.character}</strong></td>
-                      </tr>
-                      <tr>
-                        <td>拼音:</td>
-                        <td><span className="pinyin-text">{currentCharacter.pinyin}</span></td>
-                      </tr>
-                      <tr>
-                        <td>声调:</td>
-                        <td>{currentCharacter.tone}声</td>
-                      </tr>
-                      <tr>
-                        <td>含义:</td>
-                        <td>{currentCharacter.meaning}</td>
-                      </tr>
-                      <tr>
-                        <td>分类:</td>
-                        <td>{currentCharacter.category}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div className="col-md-6">
-                  <div className="text-center">
-                    <div className="hanzi-character mb-2" style={{ fontSize: '4rem' }}>
-                      {currentCharacter.character}
-                    </div>
-                    <div className="pinyin-text fs-5">
-                      {currentCharacter.pinyin} ({currentCharacter.tone}声)
-                    </div>
+      {/* Current Character Info & Practice Stats */}
+      <div className="grid gap-8 lg:grid-cols-3 mb-8">
+        {/* Current Character Info */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="lg:col-span-2"
+        >
+          <Card className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden h-full">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-900">当前字符信息</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">汉字:</span>
+                    <span className="text-2xl font-bold text-gray-900">{currentCharacter.character}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">拼音:</span>
+                    <span className="text-lg font-semibold text-blue-600">{currentCharacter.pinyin}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">声调:</span>
+                    <span className="font-medium">{currentCharacter.tone}声</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">含义:</span>
+                    <span className="font-medium">{currentCharacter.meaning}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">分类:</span>
+                    <Badge variant="outline">{currentCharacter.category}</Badge>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card">
-            <div className="card-body">
-              <h6 className="chinese-text">练习统计</h6>
-              <div className="text-center">
-                <div className="row">
-                  <div className="col-6">
-                    <div className="stat-item mb-2">
-                      <div className="stat-value text-primary">{practiceHistory.length}</div>
-                      <div className="stat-label">已练习</div>
-                    </div>
+                <div className="text-center">
+                  <div className="text-8xl font-bold text-gray-800 mb-4">
+                    {currentCharacter.character}
                   </div>
-                  <div className="col-6">
-                    <div className="stat-item mb-2">
-                      <div className="stat-value text-success">{getAverageScore()}</div>
-                      <div className="stat-label">平均分</div>
-                    </div>
-                  </div>
-                  <div className="col-12">
-                    <div className="stat-item">
-                      <div className="stat-value text-info">{getTotalAttempts()}</div>
-                      <div className="stat-label">总尝试次数</div>
-                    </div>
+                  <div className="text-xl text-blue-600 font-semibold">
+                    {currentCharacter.pinyin} ({currentCharacter.tone}声)
                   </div>
                 </div>
               </div>
-              <button
-                type="button"
-                className="btn btn-outline-primary btn-sm btn-chinese w-100 mt-2"
-                onClick={() => setShowStats(!showStats)}
-              >
-                {showStats ? '隐藏' : '显示'}详细统计
-              </button>
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Practice Stats */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <Card className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden h-full">
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-xl font-bold text-gray-900">练习统计</CardTitle>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowStats(!showStats)}
+                  className="flex items-center gap-1"
+                >
+                  {showStats ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showStats ? '隐藏' : '显示'}详情
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 grid-cols-2">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{practiceHistory.length}</div>
+                  <div className="text-sm text-gray-600">已练习</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-emerald-600">{getAverageScore()}</div>
+                  <div className="text-sm text-gray-600">平均分</div>
+                </div>
+                <div className="text-center col-span-2">
+                  <div className="text-2xl font-bold text-purple-600">{getTotalAttempts()}</div>
+                  <div className="text-sm text-gray-600">总尝试次数</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Pinyin Practice Component */}
-      <div className="row">
-        <div className="col-12">
-          <PinyinPractice
-            character={currentCharacter.character}
-            pinyin={currentCharacter.pinyin}
-            tone={currentCharacter.tone}
-            onComplete={handlePracticeComplete}
-          />
-        </div>
-      </div>
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="mb-8"
+      >
+        <PinyinPractice
+          character={currentCharacter.character}
+          pinyin={currentCharacter.pinyin}
+          tone={currentCharacter.tone}
+          onComplete={handlePracticeComplete}
+        />
+      </motion.section>
+
+      {/* Overall Stats */}
+      <StatsPanel
+        title="学习统计"
+        subtitle="追踪您的拼音学习进度"
+        stats={[
+          {
+            emoji: '📊',
+            value: practiceHistory.length,
+            label: '已练习字符',
+            color: 'blue'
+          },
+          {
+            emoji: '🎯',
+            value: `${getAverageScore()}分`,
+            label: '平均得分',
+            color: 'emerald'
+          },
+          {
+            emoji: '🔄',
+            value: getTotalAttempts(),
+            label: '总练习次数',
+            color: 'purple'
+          },
+          {
+            emoji: '📈',
+            value: `${Math.round((practiceHistory.filter(h => h.score >= 80).length / (practiceHistory.length || 1)) * 100)}%`,
+            label: '掌握率',
+            color: 'amber'
+          }
+        ]}
+        delay={1.0}
+      />
 
       {/* Detailed Statistics */}
       {showStats && practiceHistory.length > 0 && (
-        <div className="row mt-4">
-          <div className="col-12">
-            <div className="card">
-              <div className="card-header">
-                <h5 className="mb-0 chinese-text">详细练习记录</h5>
-              </div>
-              <div className="card-body">
-                <div className="table-responsive">
-                  <table className="table table-sm">
-                    <thead>
-                      <tr>
-                        <th>汉字</th>
-                        <th>最高分</th>
-                        <th>尝试次数</th>
-                        <th>状态</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {practiceHistory.map((record, index) => (
-                        <tr key={index}>
-                          <td className="chinese-text fs-5">{record.character}</td>
-                          <td>
-                            <span className={`badge ${
-                              record.score >= 90 ? 'bg-success' :
-                              record.score >= 70 ? 'bg-warning' : 'bg-danger'
-                            }`}>
-                              {record.score}分
-                            </span>
-                          </td>
-                          <td>{record.attempts}次</td>
-                          <td>
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mt-8"
+        >
+          <Card className="bg-white border border-gray-200 shadow-lg rounded-2xl overflow-hidden">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-900">详细练习记录</CardTitle>
+              <CardDescription>查看每个字符的具体练习情况</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">汉字</th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">最高分</th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">尝试次数</th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-900">状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {practiceHistory.map((record, index) => (
+                      <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="py-3 px-4 text-2xl font-bold">{record.character}</td>
+                        <td className="py-3 px-4">
+                          <Badge 
+                            variant={
+                              record.score >= 90 ? 'default' :
+                              record.score >= 70 ? 'secondary' : 'destructive'
+                            }
+                            className={
+                              record.score >= 90 ? 'bg-emerald-600 text-white' :
+                              record.score >= 70 ? 'bg-amber-100 text-amber-700' : ''
+                            }
+                          >
+                            {record.score}分
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4 text-gray-600">{record.attempts}次</td>
+                        <td className="py-3 px-4">
+                          <span className="text-lg">
                             {record.score >= 80 ? '✅ 掌握' : 
                              record.score >= 60 ? '⚠️ 需练习' : '❌ 待提高'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
+        </motion.section>
       )}
-    </div>
+    </PageLayout>
   )
 }

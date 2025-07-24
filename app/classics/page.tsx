@@ -1,6 +1,13 @@
+'use client'
+
 import Link from 'next/link'
-import ChineseButton from '../../components/ui/chinese-button'
-import ChineseCard from '../../components/ui/chinese-card'
+import { motion } from 'framer-motion'
+import { BookOpen, PenTool, Music, Users, Award, TrendingUp, Clock } from 'lucide-react'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { FeatureCard } from '@/components/ui/FeatureCard'
+import { StatsPanel } from '@/components/ui/StatsPanel'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface Classic {
   id: string
@@ -8,219 +15,256 @@ interface Classic {
   description: string
   chapters: number
   difficulty: 'easy' | 'medium' | 'hard'
-  image?: string
+  subtitle: string
+  emoji: string
 }
 
 const classics: Classic[] = [
   {
     id: 'sanzijing',
     title: '三字经',
+    subtitle: 'Three Character Classic',
     description: '中国传统启蒙教材，以三字一句的韵文形式，教授儿童基本的道德观念、历史知识和文化常识。',
     chapters: 12,
-    difficulty: 'easy'
+    difficulty: 'easy',
+    emoji: '📖'
   },
   {
     id: 'dizigui',
     title: '弟子规',
+    subtitle: 'Rules for Students',
     description: '清朝李毓秀所作，以《论语》中"弟子入则孝，出则悌"为总纲，教导儿童如何做人做事。',
     chapters: 8,
-    difficulty: 'medium'
+    difficulty: 'medium',
+    emoji: '📜'
   },
   {
     id: 'daodejing',
     title: '道德经',
+    subtitle: 'Tao Te Ching',
     description: '老子所著，中国古代哲学经典，阐述了道家思想的核心理念，适合有一定基础的学习者。',
     chapters: 81,
-    difficulty: 'hard'
+    difficulty: 'hard',
+    emoji: '🏛️'
+  }
+]
+
+const getDifficultyBadge = (difficulty: string) => {
+  switch (difficulty) {
+    case 'easy': 
+      return { text: '简单', variant: 'default' as const, color: 'emerald' }
+    case 'medium': 
+      return { text: '中等', variant: 'secondary' as const, color: 'amber' }
+    case 'hard': 
+      return { text: '困难', variant: 'destructive' as const, color: 'red' }
+    default: 
+      return { text: '未知', variant: 'outline' as const, color: 'gray' }
+  }
+}
+
+const learningTips = [
+  {
+    emoji: '📚',
+    title: '循序渐进',
+    description: '建议从《三字经》开始，逐步提高难度，打好基础后再学习更深层次的经典。'
+  },
+  {
+    emoji: '🎵',
+    title: '朗读背诵',
+    description: '经典文本都有韵律美，建议大声朗读，在朗读中感受文字的音韵之美。'
+  },
+  {
+    emoji: '✍️',
+    title: '书写练习',
+    description: '结合汉字书写练习，在书写中加深对文字和内容的理解与记忆。'
   }
 ]
 
 export default function ClassicsPage() {
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'success'
-      case 'medium': return 'warning'
-      case 'hard': return 'danger'
-      default: return 'secondary'
-    }
-  }
-
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return '简单'
-      case 'medium': return '中等'
-      case 'hard': return '困难'
-      default: return '未知'
-    }
-  }
-
   return (
-    <div className="container py-5">
-      {/* Page Header */}
-      <div className="text-center mb-5">
-        <h1 className="chinese-title display-4 mb-3 animate-fade-in">经典阅读</h1>
-        <p className="lead chinese-calligraphy">
-          探索中华文化的瑰宝，在经典中汲取智慧
-        </p>
-        <p style={{ color: 'var(--text-muted)' }}>
-          选择一部经典开始您的学习之旅
-        </p>
-      </div>
-
+    <PageLayout
+      title="经典阅读"
+      subtitle="探索中华文化的瑰宝，在经典中汲取智慧"
+      description="选择一部经典开始您的学习之旅，感受传统文化的博大精深"
+      badge="传统文化学习"
+    >
       {/* Classics Grid */}
-      <div className="row">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-16">
         {classics.map((classic, index) => (
-          <div key={classic.id} className="col-lg-4 col-md-6 mb-4">
-            <div className="card-chinese card-classic card-interactive h-100 animate-fade-in"
-                 style={{ animationDelay: `${index * 0.2}s` }}>
-              <div className="card-chinese-header text-center">
-                <div className="hanzi-display text-gradient mb-2" style={{ fontSize: '4rem' }}>
-                  {classic.title.charAt(0)}
-                </div>
-                <h5 className="card-chinese-title">{classic.title}</h5>
-                <p className="card-chinese-subtitle">
-                  {classic.id === 'sanzijing' ? 'Three Character Classic' :
-                   classic.id === 'dizigui' ? 'Rules for Students' :
-                   'Tao Te Ching'}
-                </p>
-              </div>
-
-              <div className="card-chinese-body">
-                <p className="classical-text mb-3" style={{ fontSize: 'var(--font-size-sm)', padding: 'var(--spacing-md)' }}>
-                  {classic.description}
-                </p>
-
-                <div className="card-stats">
-                  <div className="card-stat">
-                    <span className="card-stat-value">{classic.chapters}</span>
-                    <p className="card-stat-label">章节</p>
-                  </div>
-                  <div className="card-stat">
-                    <div className={`card-difficulty-badge ${classic.difficulty}`}>
-                      {getDifficultyText(classic.difficulty)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card-chinese-footer">
-                <Link
-                  href={`/classics/${classic.id}`}
-                  className="btn-chinese btn-primary w-100 mb-2"
-                >
-                  <span>📖</span>
-                  开始阅读
-                </Link>
-                <div className="d-flex gap-2">
-                  <Link
-                    href={`/writing-practice?classic=${classic.id}`}
-                    className="btn-chinese btn-secondary btn-sm flex-fill"
-                  >
-                    <span>✍️</span>
-                    练字
-                  </Link>
-                  <Link
-                    href={`/pinyin-practice?classic=${classic.id}`}
-                    className="btn-chinese btn-accent btn-sm flex-fill"
-                  >
-                    <span>🎵</span>
-                    拼音
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
+          <FeatureCard
+            key={classic.id}
+            title={classic.title}
+            subtitle={classic.subtitle}
+            description={classic.description}
+            emoji={classic.emoji}
+            badge={getDifficultyBadge(classic.difficulty)}
+            stats={[
+              { value: classic.chapters, label: '章节', color: 'blue' }
+            ]}
+            actions={[
+              {
+                text: '开始阅读',
+                href: `/classics/${classic.id}`,
+                variant: 'default',
+                icon: <BookOpen className="w-5 h-5" />,
+                color: 'blue'
+              },
+              {
+                text: '练字',
+                href: `/writing-practice?classic=${classic.id}`,
+                variant: 'secondary',
+                icon: <PenTool className="w-4 h-4" />
+              },
+              {
+                text: '拼音',
+                href: `/pinyin-practice?classic=${classic.id}`,
+                variant: 'secondary',
+                icon: <Music className="w-4 h-4" />
+              }
+            ]}
+            delay={index * 0.2}
+          />
         ))}
       </div>
 
-      {/* Learning Tips */}
-      <div className="row mt-5">
-        <div className="col-12">
-          <div className="card-chinese card-minimal cultural-pattern">
-            <div className="card-chinese-header">
-              <h5 className="card-chinese-title">学习建议</h5>
-              <p className="card-chinese-subtitle">Learning Tips</p>
-            </div>
-            <div className="card-chinese-body">
-              <div className="row">
-                <div className="col-md-4">
-                  <div className="tip-item mb-3 p-3 border-gradient">
-                    <h6 className="chinese-text mb-2">📚 循序渐进</h6>
-                    <p className="small" style={{ color: 'var(--text-secondary)' }}>
-                      建议从《三字经》开始，逐步提高难度，
-                      打好基础后再学习更深层次的经典。
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="tip-item mb-3 p-3 border-gradient">
-                    <h6 className="chinese-text mb-2">🎵 朗读背诵</h6>
-                    <p className="small" style={{ color: 'var(--text-secondary)' }}>
-                      经典文本都有韵律美，建议大声朗读，
-                      在朗读中感受文字的音韵之美。
-                    </p>
-                  </div>
-                </div>
-                <div className="col-md-4">
-                  <div className="tip-item mb-3 p-3 border-gradient">
-                    <h6 className="chinese-text mb-2">✍️ 书写练习</h6>
-                    <p className="small" style={{ color: 'var(--text-secondary)' }}>
-                      结合汉字书写练习，在书写中加深
-                      对文字和内容的理解与记忆。
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Learning Tips Section */}
+      <motion.section 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mb-16"
+      >
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">学习建议</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            掌握正确的学习方法，让经典学习事半功倍
+          </p>
         </div>
-      </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {learningTips.map((tip, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+            >
+              <Card className="h-full bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden group hover:scale-105">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">{tip.emoji}</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{tip.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{tip.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
 
       {/* Progress Overview */}
-      <div className="row mt-4">
-        <div className="col-12">
-          <div className="card-chinese card-progress">
-            <div className="card-chinese-header">
-              <h5 className="card-chinese-title">学习进度</h5>
-              <p className="card-chinese-subtitle">Learning Progress</p>
+      <StatsPanel
+        title="学习成果"
+        subtitle="数字见证学习的力量，每一步都是成长的足迹"
+        stats={[
+          {
+            emoji: '📖',
+            value: '3',
+            label: '经典文本',
+            color: 'blue'
+          },
+          {
+            emoji: '✍️',
+            value: '1000+',
+            label: '常用汉字',
+            color: 'emerald'
+          },
+          {
+            emoji: '🎵',
+            value: '400+',
+            label: '拼音组合',
+            color: 'purple'
+          },
+          {
+            emoji: '∞',
+            value: '∞',
+            label: '学习乐趣',
+            color: 'amber'
+          }
+        ]}
+        delay={0.4}
+      />
+
+      {/* Personal Progress (Mock Data) */}
+      <motion.section 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="mt-16"
+      >
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 shadow-lg rounded-3xl overflow-hidden">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              个人学习进度
+            </CardTitle>
+            <CardDescription className="text-lg text-gray-700">
+              您的整体学习进度概览
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { icon: <BookOpen className="w-6 h-6" />, value: '156', label: '已学汉字', color: 'emerald' },
+                { icon: <Award className="w-6 h-6" />, value: '23', label: '已读章节', color: 'blue' },
+                { icon: <TrendingUp className="w-6 h-6" />, value: '89', label: '练习次数', color: 'purple' },
+                { icon: <Clock className="w-6 h-6" />, value: '12', label: '学习天数', color: 'amber' }
+              ].map((stat, index) => {
+                const colors = {
+                  emerald: 'text-emerald-600 bg-emerald-100',
+                  blue: 'text-blue-600 bg-blue-100',
+                  purple: 'text-purple-600 bg-purple-100',
+                  amber: 'text-amber-600 bg-amber-100'
+                }[stat.color as keyof typeof colors]
+
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 + (index * 0.1) }}
+                    className="text-center group"
+                  >
+                    <div className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full ${colors} transition-all duration-300 group-hover:scale-110`}>
+                      {stat.icon}
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm font-medium text-gray-600">
+                      {stat.label}
+                    </div>
+                  </motion.div>
+                )
+              })}
             </div>
-            <div className="card-chinese-body">
-              <p style={{ color: 'var(--text-muted)' }} className="mb-3">
-                您的整体学习进度 (需要登录后查看详细进度)
-              </p>
-              <div className="stroke-progress mb-4">
-                <div
-                  className="stroke-progress-bar"
-                  style={{ width: '25%' }}
-                  role="progressbar"
-                  aria-valuenow={25}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                >
-                </div>
+
+            {/* Progress Bar */}
+            <div className="mt-8">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-700">整体进度</span>
+                <span className="text-sm text-gray-500">25%</span>
               </div>
-              <div className="card-stats">
-                <div className="card-stat">
-                  <span className="card-stat-value" style={{ color: 'var(--success-color)' }}>156</span>
-                  <p className="card-stat-label">已学汉字</p>
-                </div>
-                <div className="card-stat">
-                  <span className="card-stat-value" style={{ color: 'var(--primary-color)' }}>23</span>
-                  <p className="card-stat-label">已读章节</p>
-                </div>
-                <div className="card-stat">
-                  <span className="card-stat-value" style={{ color: 'var(--accent-color)' }}>89</span>
-                  <p className="card-stat-label">练习次数</p>
-                </div>
-                <div className="card-stat">
-                  <span className="card-stat-value" style={{ color: 'var(--info-color)' }}>12</span>
-                  <p className="card-stat-label">学习天数</p>
-                </div>
+              <div className="w-full bg-white rounded-full h-3 shadow-inner">
+                <motion.div 
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full shadow-sm"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: '25%' }}
+                  transition={{ duration: 1.5, delay: 1.2 }}
+                />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </CardContent>
+        </Card>
+      </motion.section>
+    </PageLayout>
   )
 }
