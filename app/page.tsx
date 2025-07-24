@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" suppressHydrationWarning>
       {/* Hero Section - Ultra Refined */}
       <motion.section 
         initial={{ opacity: 0, y: 20 }}
@@ -313,10 +313,10 @@ export default function HomePage() {
                   <span>体验练习</span>
                 </Button>
               </Link>
-              <Link href="/magic-ui">
-                <Button className="bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 text-gray-900 px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg font-semibold flex items-center gap-3 group">
-                  <Award className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                  <span>Magic UI</span>
+              <Link href="/pinyin-practice">
+                <Button className="bg-gradient-to-r from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 text-white px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg font-semibold flex items-center gap-3 group">
+                  <Music className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  <span>拼音练习</span>
                 </Button>
               </Link>
             </motion.div>

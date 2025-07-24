@@ -35,7 +35,6 @@ export default function RootLayout({
 
         {/* Security headers */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="Referrer-Policy" content="origin-when-cross-origin" />
 
         {/* Performance hints */}
@@ -44,39 +43,33 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <div id="root">
-          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <header className="sticky top-0 z-50 w-full border-b border-gray-200/80 bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/80">
             <div className="container mx-auto max-w-7xl px-6">
               <div className="flex h-16 items-center justify-between">
-                <a href="/" className="flex items-center space-x-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600">
+                <a href="/" className="flex items-center space-x-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 shadow-sm">
                     <span className="text-white font-bold text-sm">学</span>
                   </div>
                   <span className="text-xl font-bold text-gray-900">小小读书郎</span>
                 </a>
-                <nav className="hidden md:flex items-center space-x-1">
+                <nav className="hidden md:flex items-center space-x-2">
                   <a 
                     href="/classics" 
-                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200"
                   >
                     📚 经典阅读
                   </a>
                   <a 
                     href="/enhanced-writing" 
-                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all duration-200"
                   >
                     ✍️ 汉字练习
                   </a>
                   <a 
                     href="/pinyin-practice" 
-                    className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition-all duration-200"
                   >
                     🎵 拼音练习
-                  </a>
-                  <a 
-                    href="/magic-ui" 
-                    className="ml-2 px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50 transition-colors"
-                  >
-                    🎨 Magic UI
                   </a>
                 </nav>
                 {/* Mobile menu button */}
@@ -96,8 +89,8 @@ export default function RootLayout({
           <footer className="border-t bg-gray-50">
             <div className="container mx-auto max-w-7xl px-6 py-12">
               <div className="text-center space-y-4">
-                <div className="flex justify-center items-center space-x-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600">
+                <div className="flex justify-center items-center space-x-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 shadow-sm">
                     <span className="text-white font-bold text-sm">学</span>
                   </div>
                   <span className="text-xl font-bold text-gray-900">小小读书郎</span>
