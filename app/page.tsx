@@ -15,11 +15,11 @@ export default function HomePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="px-6 py-24 lg:py-40"
+        className="px-6 py-16 sm:py-20 lg:py-32 xl:py-40"
       >
         
         <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="grid gap-16 lg:grid-cols-2 lg:gap-20 items-center">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center">
             <div className="space-y-12 animate-fade-in">
               <div className="space-y-8">
                 <motion.div
@@ -37,7 +37,7 @@ export default function HomePage() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.8 }}
-                    className="text-6xl sm:text-7xl lg:text-8xl font-bold text-gray-900 leading-tight tracking-tight"
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-gray-900 leading-tight tracking-tight"
                   >
                     小小读书郎
                   </motion.h1>
@@ -45,7 +45,7 @@ export default function HomePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
-                    className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-700 leading-tight"
+                    className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-gray-700 leading-tight"
                   >
                     传承中华文化，启蒙智慧人生
                   </motion.p>
@@ -64,7 +64,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.0, duration: 0.8 }}
-                className="flex flex-col gap-4 sm:flex-row"
+                className="flex flex-col gap-4 sm:flex-row sm:gap-6"
               >
                 <Link href="/classics">
                   <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg font-semibold flex items-center gap-3 group">
@@ -86,8 +86,8 @@ export default function HomePage() {
               transition={{ delay: 0.5, duration: 1.0 }}
               className="relative"
             >
-              <div className="relative mx-auto flex h-[28rem] w-[28rem] items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-500 group">
-                <div className="text-[12rem] font-bold text-gray-800 cursor-pointer group-hover:scale-105 transition-transform duration-500">学</div>
+              <div className="relative mx-auto flex h-[20rem] w-[20rem] sm:h-[24rem] sm:w-[24rem] lg:h-[28rem] lg:w-[28rem] items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-500 group">
+                <div className="text-[8rem] sm:text-[10rem] lg:text-[12rem] font-bold text-gray-800 cursor-pointer group-hover:scale-105 transition-transform duration-500">学</div>
                 <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
                   <Button className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg text-sm font-medium">
                     <span>点击学习笔画</span>
@@ -299,7 +299,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col gap-6 sm:flex-row sm:justify-center items-center"
+              className="flex flex-col gap-4 sm:flex-row sm:justify-center items-center sm:gap-6"
             >
               <Link href="/classics">
                 <Button className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 text-lg font-semibold flex items-center gap-3 group">
